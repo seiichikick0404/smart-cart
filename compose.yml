@@ -22,15 +22,11 @@ services:
         volumes:
             - /app/node_modules
             - ./src/frontend/:/app
-        # nextアプリが用意できた後
-        # command: npm run dev
+        command: npm run dev
         depends_on:
             - app
         ports:
             - "3000:3000"
-        # 最初だけ（後で削除）
-        tty: true
-        stdin_open: true
 
     web:
         container_name: web
