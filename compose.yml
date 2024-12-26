@@ -1,0 +1,75 @@
+services:
+    app:
+        container_name: app
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
+            args:
+                UID: ${UID:-1000}
+                GID: ${GID:-1000}
+                ENV_EXTENSION: ${ENV_EXTENSION:-dev}
+        volumes:
+            - ./src/backend/:/var/www/html
+        user: www-data
+        ports:
+            - "8000:8000"
+
+    next:
+        container_name: next
+        build:
+            context: .
+            dockerfile: ./docker/next/Dockerfile
+        volumes:
+            - /app/node_modules
+            - ./src/frontend/:/app
+        # nextアプリが用意できた後
+        # command: npm run dev
+        depends_on:
+            - app
+        ports:
+            - "3000:3000"
+        # 最初だけ（後で削除）
+        tty: true
+        stdin_open: true
+
+    web:
+        container_name: web
+        build:
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile.${ENV_EXTENSION:-dev}
+        ports:
+            - ${WEB_PORT}:80
+            - "443:443"
+            - "8090:8090"
+        depends_on:
+            - app
+            - next
+        volumes:
+            - ./src/backend/:/var/www/html
+
+    db:
+        container_name: db
+        image: mysql:9.0
+        environment:
+            MYSQL_DATABASE: "${APP_NAME}"
+            MYSQL_USER: "${APP_NAME}"
+            MYSQL_PASSWORD: "${MYSQL_USER_PASSWORD}"
+            MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+        ports:
+            - "2000:3306"
+        volumes:
+            - db-volume:/var/lib/mysql
+            - ./backup:/backup
+
+    # メールサーバーを利用したい時のみ
+    # mailhog:
+    #     container_name: sys1-mailhog
+    #     image: mailhog/mailhog
+    #     ports:
+    #         - "1025:1025"
+    #         - "8025:8025"
+
+volumes:
+    db-volume:
+        driver: local
+
