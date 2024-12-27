@@ -1,6 +1,8 @@
 {
   "devDependencies": {
     "@prettier/plugin-php": "^0.22.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "prettier": "^3.2.5"
@@ -12,5 +14,9 @@
   "lint-staged": {
     "src/app/**/*.php": "prettier --write",
     "src/config/**/*.php": "prettier --write"
+  },
+  "dependencies": {
+    "@types/next": "^9.0.0",
+    "next": "^15.1.3"
   }
 }
