@@ -1,8 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { ChefHat } from 'lucide-react';
-import { SidebarNav } from './sidebar-nav';
+import { SidebarNav } from './sidebar/sidebar-nav';
 import { ScrollArea } from '../ui/scroll-area';
 import { SiteHeader } from './header/site-header';
 
